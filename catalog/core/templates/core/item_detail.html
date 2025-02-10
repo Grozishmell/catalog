@@ -1,0 +1,67 @@
+{% extends "core/base.html" %}
+
+{% block title %}{{ item.title }}{% endblock %}
+
+{% block content %}
+<h1>{{ item.title }}</h1>
+    {% if item.image %}
+        <img src="{{ item.image.url }}" alt="{{ item.title }}" width="300">
+    {% else %}
+        <p>Изображение отсутствует</p>
+    {% endif %}
+    <p><strong>Категория: </strong> {{ item.get_category_display }}</p>
+    <p><strong>Дата выпуска:</strong> {{ item.release_date }}</p>
+    <p>{{ item.description }}</p>
+
+    <h2>Средний рейтинг: {{ average_rating }} / 5</h2>
+    <p>
+        {% for _ in "12345" %}
+            {% if forloop.counter <= average_rating %}
+                ⭐
+            {% else %}
+                ☆
+            {% endif %}
+        {% endfor %}
+    </p>
+    
+    <h3>Отзывы:</h3>
+    <ul>
+        {% for review in reviews %}
+            <li>
+                <strong>{{ review.user.username }}</strong>
+                <br>
+                <span>
+                    {% for _ in "12345" %}
+                        {% if forloop.counter <= review.rating %}
+                            ⭐
+                        {% else %}
+                            ☆
+                        {% endif %}
+                    {% endfor %}
+                </span>
+                ({{ review.rating }} / 5)
+                <br>
+                {{ review.comment }}
+                <br>
+                <small>{{ review.created_at }}</small>
+            </li>
+        {% empty %}
+            <li>Отзывов пока нет.</li>
+        {% endfor %}
+    </ul>
+    
+    {% if user.is_authenticated and not user_review %}
+        <h3>Оставьте отзыв</h3>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Отправить</button>
+        </form>
+    {% elif user_review %}
+        <p style="color: gray;">Вы уже оставили отзыв.</p>
+    {% else %}
+        <p style="color: red;">Чтобы оставить отзыв, <a href="{% url 'login' %}">войдите</a> в аккаунт.</p>
+    {% endif %}    
+
+    <a href="/">Назад</a>
+{% endblock %}

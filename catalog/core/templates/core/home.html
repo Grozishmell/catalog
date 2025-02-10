@@ -1,0 +1,14 @@
+{% extends "core/base.html" %}
+
+{% block title %}Главная - Каталог{% endblock %}
+
+{% block content %}
+<h1>Каталог</h1>
+    <uL>
+        {% for item in items %}
+            <li>
+                <a href="{% url 'item_detail' item.id %}">{{ item.title }}</a> ({{ item.get_category_dispay }})
+            </li>
+        {% endfor %}
+    </uL>
+{% endblock %}
