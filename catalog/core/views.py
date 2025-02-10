@@ -28,20 +28,20 @@ def home(request):
 
 def item_detail(request, item_id):
     item = get_object_or_404(Item, id=item_id)
-    reviews = item.reviews.all()
+    reviews = item.reviews.all().order_by('-created_at')  # Все отзывы, сортируем по дате
     average_rating = item.reviews.aggregate(Avg('rating'))['rating__avg'] or 0
     form = ReviewForm()
 
-    # Проверяем, есть ли у аутентифицированного пользователя отзыв на этот предмет
     user_review = None
     if request.user.is_authenticated:
         user_review = reviews.filter(user=request.user).first()
+        if user_review:
+            reviews = reviews.exclude(id=user_review.id)  # Убираем его из общего списка
 
     if request.method == 'POST':
         if not request.user.is_authenticated:
             return redirect('account_login')
-        
-        # Если пользователь уже оставил отзыв, не обрабатываем форму
+
         if user_review:
             messages.error(request, "Вы уже оставили отзыв.")
             return redirect('item_detail', item_id=item.id)
@@ -54,16 +54,15 @@ def item_detail(request, item_id):
             review.save()
             return redirect('item_detail', item_id=item.id)
         else:
-            print(form.errors)  # Выведет ошибки формы в консоль
+            print(form.errors)
 
     return render(request, 'core/item_detail.html', {
         'item': item,
         'reviews': reviews,
         'average_rating': round(average_rating, 1),
-        'form': form if request.user.is_authenticated and not user_review else None,  # форма только для аутентифицированных пользователей, которые не оставили отзыв
+        'form': form if request.user.is_authenticated and not user_review else None,
         'user_review': user_review
     })
-
 
 
 def register_view(request):

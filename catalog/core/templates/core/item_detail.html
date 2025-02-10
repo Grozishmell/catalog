@@ -13,41 +13,65 @@
     <p><strong>Дата выпуска:</strong> {{ item.release_date }}</p>
     <p>{{ item.description }}</p>
 
-    <h2>Средний рейтинг: {{ average_rating }} / 5</h2>
+    <h2>Средний рейтинг: {{ average_rating }} / 10</h2>
     <p>
-        {% for _ in "12345" %}
-            {% if forloop.counter <= average_rating %}
+        {% for i in range %}
+            {% if i < average_rating %}
                 ⭐
             {% else %}
                 ☆
             {% endif %}
         {% endfor %}
     </p>
+
     
     <h3>Отзывы:</h3>
     <ul>
-        {% for review in reviews %}
-            <li>
-                <strong>{{ review.user.username }}</strong>
-                <br>
-                <span>
-                    {% for _ in "12345" %}
-                        {% if forloop.counter <= review.rating %}
-                            ⭐
-                        {% else %}
-                            ☆
-                        {% endif %}
-                    {% endfor %}
-                </span>
-                ({{ review.rating }} / 5)
-                <br>
-                {{ review.comment }}
-                <br>
-                <small>{{ review.created_at }}</small>
-            </li>
-        {% empty %}
+        {% if user_review or reviews %}
+            {% if user_review %}
+                <li style="background-color: #ffffcc; padding: 10px; border: 2px solid orange;">
+                    <strong>{{ user_review.user.username }} (Ваш отзыв)</strong>
+                    <br>
+                    <span>
+                        {% for i in range %}
+                            {% if i < user_review.rating %}
+                                ⭐
+                            {% else %}
+                                ☆
+                            {% endif %}
+                        {% endfor %}
+                    </span>
+                    ({{ user_review.rating }} / 10)
+                    <br>
+                    {{ user_review.comment }}
+                    <br>
+                    <small>{{ user_review.created_at }}</small>
+                </li>
+            {% endif %}
+
+            {% for review in reviews %}
+                <li>
+                    <strong>{{ review.user.username }}</strong>
+                    <br>
+                    <span>
+                        {% for i in range %}
+                            {% if i < review.rating %}
+                                ⭐
+                            {% else %}
+                                ☆
+                            {% endif %}
+                        {% endfor %}
+                    </span>
+                    ({{ review.rating }} / 10)
+                    <br>
+                    {{ review.comment }}
+                    <br>
+                    <small>{{ review.created_at }}</small>
+                </li>
+            {% endfor %}
+        {% else %}
             <li>Отзывов пока нет.</li>
-        {% endfor %}
+        {% endif %}
     </ul>
     
     {% if user.is_authenticated and not user_review %}
