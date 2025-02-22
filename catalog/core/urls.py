@@ -1,6 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import ItemViewSet, ReviewViewSet, home, item_detail, register_view, login_view, logout_view, user_list_items
+from . import views
 
 
 router = DefaultRouter()
@@ -15,4 +16,5 @@ urlpatterns = [
     path('login/', login_view, name="login"),
     path('logout/', logout_view, name="logout"),
     path('profile/', user_list_items, name='user_list_items'),
+    path('item/<int:item_id>/update-status/', views.update_item_status, name='update_item_status'),
 ]

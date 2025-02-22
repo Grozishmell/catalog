@@ -14,6 +14,18 @@
     <p><strong>Категория: </strong> {{ item.get_category_display }}</p>
     <p><strong>Дата выпуска:</strong> {{ item.release_date }}</p>
     <p>{{ item.description }}</p>
+
+    <form id="status-form" method="POST" action="{% url 'update_item_status' item.id %}">
+        {% csrf_token %}
+        <label for="status">Статус:</label>
+        <select name="status" id="status" data-item-id="{{ item.id }}" onchange="updateStatus(this)" {% if user_review %}disabled{% endif %}>
+            <option value="not_watched" {% if list_item_status == 'not_watched' %}selected{% endif %}>Не смотрю</option>
+            <option value="will_watch" {% if list_item_status == 'will_watch' %}selected{% endif %}>Буду смотреть</option>
+            <option value="watching" {% if list_item_status == 'watching' %}selected{% endif %}>Смотрю</option>
+            <option value="watched" {% if list_item_status == 'watched' or user_review %}selected{% endif %}>Просмотрено</option>
+        </select>
+    </form>
+    
     
     <div class="container-rating">
         <h2 style="display: inline-block; margin-right: 10px;">Средний рейтинг: ({{ average_rating }} / 10)</h2>
@@ -101,4 +113,6 @@
     <a href="/">Назад</a>
     
     <script src="{% static 'js/rating.js' %}"></script>
+    <script src="{% static 'js/status_update.js' %}"></script>
+    <script src="{% static 'js/close_rating.js' %}"></script>
 {% endblock %}

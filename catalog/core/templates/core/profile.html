@@ -4,6 +4,26 @@
 
 {% block content %}
     <h1>Профиль {{ user.username }}</h1>
+    
+    <!-- Форма фильтрации по статусу и сортировки -->
+    <form method="get" id="filter-form">
+        <label for="status">Фильтр по статусу:</label>
+        <select name="status" id="status">
+            <option value="">Все</option>
+            <option value="watching" {% if request.GET.status == 'watching' %}selected{% endif %}>Смотрю</option>
+            <option value="will_watch" {% if request.GET.status == 'will_watch' %}selected{% endif %}>Буду смотреть</option>
+            <option value="dropped" {% if request.GET.status == 'dropped' %}selected{% endif %}>Заброшено</option>
+        </select>
+
+        <label for="sort">Сортировка:</label>
+        <select name="sort" id="sort">
+            <option value="asc" {% if request.GET.sort == 'asc' %}selected{% endif %}>По возрастанию</option>
+            <option value="desc" {% if request.GET.sort == 'desc' %}selected{% endif %}>По убыванию</option>
+        </select>
+
+        <button type="submit">Применить</button>
+    </form>
+
     <ul>
         {% for list_item in user_items %}
             <li>

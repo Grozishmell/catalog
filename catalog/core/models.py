@@ -49,10 +49,18 @@ class Review(models.Model):
     
 
 class List_Items(models.Model):
+    status_choices = [
+        ('not_watched', 'Не смотрю'),
+        ('will_watch', 'Буду смотреть'),
+        ('watching', 'Смотрю'),
+        ('dropped', 'Заброшен')
+    ]
+
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Пользователь")
     item = models.ForeignKey(Item, on_delete=models.CASCADE, verbose_name="Контент")
     review = models.ForeignKey(Review, on_delete=models.SET_NULL, blank=True, null=True, verbose_name="Отзыв",
                                related_name="list_items")
+    status = models.CharField(max_length=20, choices=status_choices, default='not_watched')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата добавления")
 
     def __str__(self):
