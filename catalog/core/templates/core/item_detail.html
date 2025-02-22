@@ -1,5 +1,7 @@
 {% extends "core/base.html" %}
 
+{% load static %}
+
 {% block title %}{{ item.title }}{% endblock %}
 
 {% block content %}
@@ -12,18 +14,20 @@
     <p><strong>Категория: </strong> {{ item.get_category_display }}</p>
     <p><strong>Дата выпуска:</strong> {{ item.release_date }}</p>
     <p>{{ item.description }}</p>
-
-    <h2>Средний рейтинг: {{ average_rating }} / 10</h2>
-    <p>
-        {% for i in range %}
-            {% if i < average_rating %}
-                ⭐
-            {% else %}
-                ☆
-            {% endif %}
-        {% endfor %}
-    </p>
-
+    
+    <div class="container-rating">
+        <h2 style="display: inline-block; margin-right: 10px;">Средний рейтинг: ({{ average_rating }} / 10)</h2>
+        <p style="display: inline-block; margin: 0;">
+            {% for i in range %}
+                {% if i < average_rating %}
+                    <span class="star_gold">&#9733;</span>
+                {% else %}
+                    <span class="star_gray">&#9733;</span>
+                {% endif %}
+            {% endfor %}
+        </p>
+    </div>
+    
     
     <h3>Отзывы:</h3>
     <ul>
@@ -35,9 +39,9 @@
                     <span>
                         {% for i in range %}
                             {% if i < user_review.rating %}
-                                ⭐
+                                <span class="star_gold">&#9733;</span>
                             {% else %}
-                                ☆
+                                <span class="star_gray">&#9733;</span>
                             {% endif %}
                         {% endfor %}
                     </span>
@@ -56,9 +60,9 @@
                     <span>
                         {% for i in range %}
                             {% if i < review.rating %}
-                                ⭐
+                                <span class="star_gold">&#9733;</span>
                             {% else %}
-                                ☆
+                                <span class="star_gray">&#9733;</span>
                             {% endif %}
                         {% endfor %}
                     </span>
@@ -68,6 +72,7 @@
                     <br>
                     <small>{{ review.created_at }}</small>
                 </li>
+                <br>
             {% endfor %}
         {% else %}
             <li>Отзывов пока нет.</li>
@@ -76,9 +81,15 @@
     
     {% if user.is_authenticated and not user_review %}
         <h3>Оставьте отзыв</h3>
-        <form method="post">
+        <form method="post" id="review-form">
             {% csrf_token %}
-            {{ form.as_p }}
+            <div class="rating-container">
+                {% for i in range %}
+                    <span class="star" data-value="{{ i|add:1 }}">&#9733;</span>
+                {% endfor %}
+            </div>
+            <input type="hidden" name="rating" id="rating-input">
+            {{ form.comment }}
             <button type="submit">Отправить</button>
         </form>
     {% elif user_review %}
@@ -88,4 +99,6 @@
     {% endif %}    
 
     <a href="/">Назад</a>
+    
+    <script src="{% static 'js/rating.js' %}"></script>
 {% endblock %}

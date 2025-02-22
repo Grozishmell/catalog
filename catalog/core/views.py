@@ -1,7 +1,7 @@
 from rest_framework import viewsets, permissions
 from .serializers import ItemSerializer, ReviewSerializer
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Item, Review
+from .models import Item, Review, List_Items
 from .forms import ReviewForm, RegisterForm, LoginForm
 from django.db.models import Avg
 from django.contrib.auth.decorators import login_required
@@ -24,6 +24,12 @@ class ReviewViewSet(viewsets.ModelViewSet):
 def home(request):
     items = Item.objects.all()
     return render(request, 'core/home.html', {'items' : items})
+
+
+@login_required
+def user_list_items(request):
+    user_items = List_Items.objects.filter(user=request.user).select_related('item', 'review')
+    return render(request, 'core/profile.html', {'user_items': user_items})
 
 
 def item_detail(request, item_id):
@@ -61,7 +67,8 @@ def item_detail(request, item_id):
         'reviews': reviews,
         'average_rating': round(average_rating, 1),
         'form': form if request.user.is_authenticated and not user_review else None,
-        'user_review': user_review
+        'user_review': user_review,
+        'range': range(10)
     })
 
 

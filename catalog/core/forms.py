@@ -6,12 +6,7 @@ from django.contrib.auth import authenticate
 
 
 class ReviewForm(forms.ModelForm):
-    RATING_CHOICES = [(i, '⭐' * i) for i in range(1, 11)]
-
-    rating = forms.ChoiceField(
-        choices=RATING_CHOICES,
-        widget=forms.RadioSelect(attrs={'class': 'rating-stars'})
-    )
+    rating = forms.IntegerField(widget=forms.HiddenInput(), required=True)
 
     class Meta:
         model = Review

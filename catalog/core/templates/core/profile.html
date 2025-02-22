@@ -1,0 +1,20 @@
+{% extends "core/base.html" %}
+
+{% block title %}Профиль - {{ user.username }}{% endblock %}
+
+{% block content %}
+    <h1>Профиль {{ user.username }}</h1>
+    <ul>
+        {% for list_item in user_items %}
+            <li>
+                <strong>{{ list_item.item.title }}</strong>
+                {% if list_item.review %}
+                    <p>Мой отзыв: {{ list_item.review.comment }}</p>
+                    <p>Оценка: {{ list_item.review.rating }}</p>
+                {% else %}
+                    <p>Отзыва пока нет</p>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

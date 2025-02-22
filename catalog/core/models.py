@@ -33,5 +33,27 @@ class Review(models.Model):
     comment = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def save(self, *args, **kwargs):
+        # Сохраняем отзыв
+        super().save(*args, **kwargs)
+
+        # Если отзыва нет в List_Items, создаем запись
+        List_Items.objects.update_or_create(
+            user=self.user,
+            item=self.item,
+            defaults={'review': self}
+        )
+
     def __str__(self):
         return f'{self.user} - {self.item}'
+    
+
+class List_Items(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Пользователь")
+    item = models.ForeignKey(Item, on_delete=models.CASCADE, verbose_name="Контент")
+    review = models.ForeignKey(Review, on_delete=models.SET_NULL, blank=True, null=True, verbose_name="Отзыв",
+                               related_name="list_items")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата добавления")
+
+    def __str__(self):
+        return f"{self.user} - {self.item}"
