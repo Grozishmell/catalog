@@ -10,6 +10,7 @@
         <label for="status">Фильтр по статусу:</label>
         <select name="status" id="status">
             <option value="">Все</option>
+            <option value="watched" {% if request.GET.status == 'watched' %}selected{% endif %}>Просмотрено</option>
             <option value="watching" {% if request.GET.status == 'watching' %}selected{% endif %}>Смотрю</option>
             <option value="will_watch" {% if request.GET.status == 'will_watch' %}selected{% endif %}>Буду смотреть</option>
             <option value="dropped" {% if request.GET.status == 'dropped' %}selected{% endif %}>Заброшено</option>
