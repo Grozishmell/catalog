@@ -28,7 +28,20 @@
     <ul>
         {% for list_item in user_items %}
             <li>
-                <strong>{{ list_item.item.title }}</strong>
+                <strong>{{ list_item.item.title }}</strong> — 
+                <em>Статус: 
+                    {% if list_item.status == 'watched' %}
+                        Просмотрено
+                    {% elif list_item.status == 'watching' %}
+                        Смотрю
+                    {% elif list_item.status == 'will_watch' %}
+                        Буду смотреть
+                    {% elif list_item.status == 'dropped' %}
+                        Заброшено
+                    {% else %}
+                        Неизвестный статус
+                    {% endif %}
+                </em>
                 {% if list_item.review %}
                     <p>Мой отзыв: {{ list_item.review.comment }}</p>
                     <p>Оценка: {{ list_item.review.rating }}</p>
@@ -37,5 +50,5 @@
                 {% endif %}
             </li>
         {% endfor %}
-    </ul>
+    </ul>    
 {% endblock %}

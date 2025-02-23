@@ -19,11 +19,14 @@
         {% csrf_token %}
         <label for="status">Статус:</label>
         <select name="status" id="status" data-item-id="{{ item.id }}" onchange="updateStatus(this)" {% if user_review %}disabled{% endif %}>
-            <option value="not_watched" {% if list_item_status == 'not_watched' %}selected{% endif %}>Не смотрю</option>
+            <option value="not_watched" {% if list_item_status == 'not_watched' %}selected{% endif %} 
+                {% if list_item_status and list_item_status != 'not_watched' %}disabled{% endif %}>
+                Не смотрю
+            </option>
             <option value="will_watch" {% if list_item_status == 'will_watch' %}selected{% endif %}>Буду смотреть</option>
             <option value="watching" {% if list_item_status == 'watching' %}selected{% endif %}>Смотрю</option>
             <option value="watched" {% if list_item_status == 'watched' or user_review %}selected{% endif %}>Просмотрено</option>
-        </select>
+        </select>        
     </form>
     
     
